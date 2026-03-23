@@ -23,8 +23,18 @@ provider "aws" {
     secret_key = var.secret_key
 }
 
+module "red" {
+  source              = "./modules/VPC"
+  cidr_block          = "10.0.0.0/16"
+  subnet_publica_cidr = "10.0.1.0/24"
+  nombre              = "mi-vpc"
+}
+
 module "servidor" {
     source = "./modules/EC2"
     ami = "ami-011899242bb902164"
     instance_type = "t3.micro"
+    subnet_id     = module.red.subnet_id
+    sg_id         = module.red.sg_id
 }
+
